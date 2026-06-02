@@ -66,34 +66,6 @@ As the player progresses, the game becomes harder by:
 - Introducing **more misleading** incorrect options.
 - Showing **more descriptions on screen** at once.
 
-### Difficulty Curve
-
-Difficulty rises gradually so the player stays challenged but not overwhelmed
-(a state game designers call **flow**):
-
-```
-Difficulty
-   ^
-   |                                          ___/
-   |                                  ___/----
-   |                          ___/----
-   |                  ___/----
-   |          ___/----
-   |  ___/----
-   +-------------------------------------------------> Level
-     1      2       3       4       5       6
-```
-
-```mermaid
-xychart-beta
-    title "Difficulty Curve"
-    x-axis "Level" [1, 2, 3, 4, 5, 6]
-    y-axis "Difficulty" 0 --> 10
-    line [2, 3, 4, 6, 8, 10]
-```
-
-> The curve climbs steadily, never with a sudden jump — a sharp spike would
-> frustrate players, while a flat line would bore them.
 
 ## Road Sign Categories
 
@@ -126,8 +98,3 @@ The game covers a wide range of Malaysian road signs, including:
 # 3. Build the Android package
 # TODO
 ```
-
-## Project Status
-
-🚧 **Planning / Design phase.** The game concept and design are defined; code
-implementation has not begun.
