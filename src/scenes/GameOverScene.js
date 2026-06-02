@@ -11,5 +11,14 @@ export default class GameOverScene extends Phaser.Scene {
       fontSize: '48px',
       color: '#ffffff',
     }).setOrigin(0.5);
+    this.add.text(360, 720, '(tap to restart)', {
+      fontSize: '28px',
+      color: '#a8dadc',
+    }).setOrigin(0.5);
+
+    // Temporary: tap anywhere to go back to the menu (for testing FR-02).
+    this.input.once('pointerdown', () => {
+      this.scene.start('MenuScene');
+    });
   }
 }

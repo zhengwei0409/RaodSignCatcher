@@ -12,5 +12,10 @@ export default class BootScene extends Phaser.Scene {
       fontSize: '48px',
       color: '#ffffff',
     }).setOrigin(0.5);
+
+    // After 1 second, automatically switch to MenuScene.
+    this.time.delayedCall(1000, () => {
+      this.scene.start('MenuScene');
+    });
   }
 }
