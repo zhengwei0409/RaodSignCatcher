@@ -1,4 +1,8 @@
 import Phaser from 'phaser';
+import BootScene from './scenes/BootScene.js';
+import MenuScene from './scenes/MenuScene.js';
+import GameScene from './scenes/GameScene.js';
+import GameOverScene from './scenes/GameOverScene.js';
 
 // Game configuration: a portrait (tall) canvas sized for mobile phones.
 const config = {
@@ -11,7 +15,9 @@ const config = {
     mode: Phaser.Scale.FIT,           // scale the canvas to fit the screen
     autoCenter: Phaser.Scale.CENTER_BOTH, // center it horizontally and vertically
   },
+  // Register all scenes. The first one in the list starts automatically.
+  scene: [BootScene, MenuScene, GameScene, GameOverScene],
 };
 
-// Create the game. This draws the blank canvas with the background color.
+// Create the game.
 new Phaser.Game(config);
