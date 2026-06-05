@@ -43,6 +43,13 @@ export default class GameScene extends Phaser.Scene {
       color: '#ffffff',
     });
 
+    // --- FR-11: lives (start with 3) ---
+    this.lives = 3;
+    this.livesText = this.add.text(700, 20, 'Lives: 3', {
+      fontSize: '36px',
+      color: '#ffffff',
+    }).setOrigin(1, 0); // anchor top-right
+
     // --- FR-08: falling descriptions ---
     // A "group" is Phaser's container for many similar objects. We keep all the
     // falling description texts in here so we can loop over them every frame.
@@ -138,7 +145,9 @@ export default class GameScene extends Phaser.Scene {
           this.score += 10;
           this.scoreText.setText('Score: ' + this.score);
         } else {
-          console.log('caught WRONG:', label.text);
+          // FR-11: catching a wrong description loses a life.
+          this.lives -= 1;
+          this.livesText.setText('Lives: ' + this.lives);
         }
         label.destroy();
         return; // this label is gone; skip the off-screen check below
