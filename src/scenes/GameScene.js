@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { generateQuestion, buildOptions } from '../data/questionGenerator.js';
+import { SIGNS } from '../data/signs.js';
 
 // GameScene: where the actual game is played.
 export default class GameScene extends Phaser.Scene {
@@ -11,10 +12,12 @@ export default class GameScene extends Phaser.Scene {
     // Draw the game background to fill the whole 720x1280 canvas.
     this.add.image(360, 640, 'gameBackground').setDisplaySize(720, 1280);
 
-    // FR-05: build one question. We store it on `this` (as this.question) so
-    // later requirements (FR-08 falling descriptions, FR-09 catch detection)
-    // can read the same question's options.
-    this.question = generateQuestion();
+    // A shuffled queue of signs we haven't shown yet. We pull from it so no sign
+    // repeats until every sign has appeared once; then it refills + reshuffles.
+    this.signQueue = [];
+
+    // FR-05: build the first question, using the next sign from the queue.
+    this.question = generateQuestion(2, false, this.nextSign());
 
     // FR-06: show this question's sign image near the top of the screen.
     // - 360 is horizontal centre (canvas width 720).
@@ -43,6 +46,10 @@ export default class GameScene extends Phaser.Scene {
       fontSize: '36px',
       color: '#ffffff',
     }).setDepth(1000); // FR-17: keep HUD above falling descriptions
+
+    // How many signs the player has answered correctly. Answering all of them
+    // (one full pass through SIGNS) wins the game.
+    this.signsCleared = 0;
 
     // --- FR-11: lives (start with 3) ---
     this.lives = 3;
@@ -130,10 +137,19 @@ export default class GameScene extends Phaser.Scene {
     });
   }
 
+  // Returns the next sign to show, with no repeats until all signs have been
+  // used. When the queue empties, refill it with a fresh shuffle of all signs.
+  nextSign() {
+    if (this.signQueue.length === 0) {
+      this.signQueue = Phaser.Utils.Array.Shuffle([...SIGNS]);
+    }
+    return this.signQueue.pop();
+  }
+
   // Picks a fresh question and updates the screen to show it.
   loadNextQuestion() {
-    // New sign + new options (respect hard mode if already unlocked).
-    this.question = generateQuestion();
+    // New sign (no repeats) + new options (respect hard mode if unlocked).
+    this.question = generateQuestion(2, false, this.nextSign());
     if (this.hardMode) {
       this.question.options = buildOptions(this.question.sign, 2, true);
     }
@@ -245,6 +261,14 @@ export default class GameScene extends Phaser.Scene {
             this.hardMode = true;
             this.question.options = buildOptions(this.question.sign, 2, true);
             this.spawnQueue = []; // force the queue to refill from new options
+          }
+
+          // Win check: once the player has answered every sign correctly,
+          // the game is won. Pass won:true so GameOverScene shows a win screen.
+          this.signsCleared += 1;
+          if (this.signsCleared >= SIGNS.length) {
+            this.scene.start('GameOverScene', { score: this.score, won: true });
+            return;
           }
 
           // Correct answer -> move on to a new sign + new options.

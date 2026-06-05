@@ -53,9 +53,10 @@ function shuffle(array) {
 //
 // wrongCount lets us control difficulty later (FR-14/FR-15 can ask for more
 // wrong options). It defaults to 2 so callers don't have to pass anything yet.
-export function generateQuestion(wrongCount = 2, hard = false) {
-  // 1. Pick which sign this question is about.
-  const sign = pickRandom(SIGNS);
+export function generateQuestion(wrongCount = 2, hard = false, sign = null) {
+  // 1. Which sign this question is about. The caller can pass a specific sign
+  //    (e.g. to avoid repeating signs); otherwise pick one at random.
+  if (!sign) sign = pickRandom(SIGNS);
 
   // 2. Tag the one correct description.
   const correctOption = { text: sign.correct, isCorrect: true };

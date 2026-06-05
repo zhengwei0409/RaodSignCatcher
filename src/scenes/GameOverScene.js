@@ -9,10 +9,11 @@ export default class GameOverScene extends Phaser.Scene {
   // data is whatever the previous scene passed in scene.start(..., data).
   create(data) {
     const finalScore = data?.score ?? 0;
+    const won = data?.won ?? false; // true when the player cleared all signs
 
-    this.add.text(360, 520, 'Game Over', {
+    this.add.text(360, 520, won ? 'You Win!' : 'Game Over', {
       fontSize: '64px',
-      color: '#ffffff',
+      color: won ? '#ffd60a' : '#ffffff',
     }).setOrigin(0.5);
 
     this.add.text(360, 640, 'Final Score: ' + finalScore, {
