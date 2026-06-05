@@ -63,11 +63,12 @@ export default class MenuScene extends Phaser.Scene {
     });
 
     // Creator credit at the bottom of the screen.
-    this.add.text(360, 1180, 'Created By:\nChew Zheng Wei\n23005014', {
-      fontSize: '26px',
+    this.add.text(360, 1160, 'Created By:\nChew Zheng Wei\n23005014', {
+      fontSize: '36px',
       color: '#a8dadc',
       align: 'center',
       lineSpacing: 4,
+      fontStyle: 'bold',
     }).setOrigin(0.5);
   }
 }
