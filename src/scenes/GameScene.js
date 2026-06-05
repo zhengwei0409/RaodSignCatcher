@@ -121,6 +121,20 @@ export default class GameScene extends Phaser.Scene {
     this.descriptions.getChildren().forEach((label) => {
       label.y += this.fallSpeed;
 
+      // FR-09: did the car catch this description? Check if their bounding
+      // boxes overlap. If so, read the isCorrect flag we attached at spawn.
+      const carBounds = this.car.getBounds();
+      const labelBounds = label.getBounds();
+      if (Phaser.Geom.Intersects.RectangleToRectangle(carBounds, labelBounds)) {
+        if (label.isCorrect) {
+          console.log('caught CORRECT:', label.text);
+        } else {
+          console.log('caught WRONG:', label.text);
+        }
+        label.destroy();
+        return; // this label is gone; skip the off-screen check below
+      }
+
       // If it has fallen past the bottom edge (canvas height 1280), it was not
       // caught. destroy() removes it from the scene AND the group, freeing it
       // so objects don't pile up forever.
