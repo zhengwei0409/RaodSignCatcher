@@ -65,8 +65,10 @@ export default class GameScene extends Phaser.Scene {
     }
     const option = this.spawnQueue.pop();
 
-    // Random x so they don't all fall in the same column. Keep 100px margins.
-    const x = Phaser.Math.Between(100, 620);
+    // Random x so they don't all fall in the same column. The box can be up to
+    // ~280px wide, so its centre must stay ~160px from each edge or a wide box
+    // would clip off-screen. Hence the 160..560 range instead of 100..620.
+    const x = Phaser.Math.Between(160, 560);
 
     const label = this.add
       .text(x, -40, option.text, {
@@ -74,6 +76,10 @@ export default class GameScene extends Phaser.Scene {
         color: '#ffffff',
         backgroundColor: '#457b9d',
         padding: { x: 12, y: 8 },
+        align: 'center', // centre each line within the box (looks tidy on >1 line)
+        // Auto-wrap long text onto multiple lines once it passes 240px wide,
+        // so long descriptions no longer run off the screen edges.
+        wordWrap: { width: 240, useAdvancedWrap: true },
       })
       .setOrigin(0.5);
 
@@ -110,10 +116,17 @@ export default class GameScene extends Phaser.Scene {
     // otherwise half the car would slide off. Clamp forces car.x into range.
     this.car.x = Phaser.Math.Clamp(this.car.x, 60, 720 - 60);
 
-    // --- FR-08: make every description fall ---
+    // --- FR-08: make every description fall, and remove ones off-screen ---
     // getChildren() returns the array of all texts currently in the group.
     this.descriptions.getChildren().forEach((label) => {
       label.y += this.fallSpeed;
+
+      // If it has fallen past the bottom edge (canvas height 1280), it was not
+      // caught. destroy() removes it from the scene AND the group, freeing it
+      // so objects don't pile up forever.
+      if (label.y > 1280) {
+        label.destroy();
+      }
     });
   }
 }
