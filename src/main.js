@@ -5,6 +5,7 @@ import MenuScene from './scenes/MenuScene.js';
 import GameScene from './scenes/GameScene.js';
 import GameOverScene from './scenes/GameOverScene.js';
 import HowToPlayScene from './scenes/HowToPlayScene.js';
+import AnswersScene from './scenes/AnswersScene.js';
 
 // Game configuration: a portrait (tall) canvas sized for mobile phones.
 const config = {
@@ -18,7 +19,7 @@ const config = {
     autoCenter: Phaser.Scale.CENTER_BOTH, // center it horizontally and vertically
   },
   // Register all scenes. The first one in the list starts automatically.
-  scene: [BootScene, MenuScene, GameScene, GameOverScene, HowToPlayScene],
+  scene: [BootScene, MenuScene, GameScene, GameOverScene, HowToPlayScene, AnswersScene],
 };
 
 // Create the game.

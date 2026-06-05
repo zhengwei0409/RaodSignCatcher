@@ -49,5 +49,17 @@ export default class MenuScene extends Phaser.Scene {
     howToButton.on('pointerdown', () => {
       this.scene.start('HowToPlayScene');
     });
+
+    // Answers button -> show the scrollable sign-meanings study list.
+    const answersButton = this.add.text(360, 960, 'Sign Answers', {
+      fontSize: '40px',
+      color: '#ffffff',
+      backgroundColor: '#457b9d',
+      padding: { x: 30, y: 16 },
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+    answersButton.on('pointerdown', () => {
+      this.scene.start('AnswersScene');
+    });
   }
 }
