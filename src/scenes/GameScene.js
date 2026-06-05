@@ -44,6 +44,10 @@ export default class GameScene extends Phaser.Scene {
     // each of which has an .isDown flag that is true while the key is held.
     this.cursors = this.input.keyboard.createCursorKeys();
 
+    // Sound effects, prepared once so we can replay them instantly on catch.
+    this.correctSound = this.sound.add('sfx_correct');
+    this.wrongSound = this.sound.add('sfx_wrong');
+
     // --- FR-10: score ---
     this.score = 0;
     this.scoreText = this.add.text(20, 20, 'Score: 0', {
@@ -253,6 +257,8 @@ export default class GameScene extends Phaser.Scene {
       const labelBounds = label.getBounds();
       if (Phaser.Geom.Intersects.RectangleToRectangle(carBounds, labelBounds)) {
         if (label.isCorrect) {
+          this.correctSound.play();
+
           // FR-10: catching a correct description adds points.
           this.score += 10;
           this.scoreText.setText('Score: ' + this.score);
@@ -289,6 +295,8 @@ export default class GameScene extends Phaser.Scene {
           this.loadNextQuestion();
           return; // the old labels are gone; stop looping the old list
         } else {
+          this.wrongSound.play();
+
           // FR-11: catching a wrong description loses a life.
           this.lives -= 1;
           this.livesText.setText('Lives: ' + this.lives);

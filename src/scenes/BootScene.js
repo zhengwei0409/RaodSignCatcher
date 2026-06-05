@@ -31,6 +31,10 @@ export default class BootScene extends Phaser.Scene {
     this.load.image('sign_turn_right', 'assets/signs/turn_right_only.png');
     this.load.image('sign_works', 'assets/signs/works_road.png');
 
+    // --- Sound effects (key -> file). ---
+    this.load.audio('sfx_correct', 'assets/correct_sound_effect.mp3');
+    this.load.audio('sfx_wrong', 'assets/wrong_sound_effect.mp3');
+
     // If any file fails to load, log it clearly instead of failing silently.
     this.load.on('loaderror', (file) => {
       console.error('Failed to load asset:', file.key, 'from', file.src);
