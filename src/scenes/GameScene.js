@@ -36,6 +36,13 @@ export default class GameScene extends Phaser.Scene {
     // each of which has an .isDown flag that is true while the key is held.
     this.cursors = this.input.keyboard.createCursorKeys();
 
+    // --- FR-10: score ---
+    this.score = 0;
+    this.scoreText = this.add.text(20, 20, 'Score: 0', {
+      fontSize: '36px',
+      color: '#ffffff',
+    });
+
     // --- FR-08: falling descriptions ---
     // A "group" is Phaser's container for many similar objects. We keep all the
     // falling description texts in here so we can loop over them every frame.
@@ -127,7 +134,9 @@ export default class GameScene extends Phaser.Scene {
       const labelBounds = label.getBounds();
       if (Phaser.Geom.Intersects.RectangleToRectangle(carBounds, labelBounds)) {
         if (label.isCorrect) {
-          console.log('caught CORRECT:', label.text);
+          // FR-10: catching a correct description adds points.
+          this.score += 10;
+          this.scoreText.setText('Score: ' + this.score);
         } else {
           console.log('caught WRONG:', label.text);
         }
