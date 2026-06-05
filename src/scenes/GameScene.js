@@ -21,7 +21,8 @@ export default class GameScene extends Phaser.Scene {
     // - 220 is a y position close to the top.
     // - setDisplaySize keeps the sign a sensible size regardless of the
     //   image file's original pixel dimensions.
-    this.add
+    // Stored on `this` so we can swap its texture when the question changes.
+    this.signImage = this.add
       .image(360, 220, this.question.sign.key)
       .setDisplaySize(240, 240);
 
