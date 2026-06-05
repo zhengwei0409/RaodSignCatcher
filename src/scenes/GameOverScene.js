@@ -32,5 +32,17 @@ export default class GameOverScene extends Phaser.Scene {
     restartButton.on('pointerdown', () => {
       this.scene.start('GameScene');
     });
+
+    // Main Menu button -> back to the menu instead of replaying.
+    const menuButton = this.add.text(360, 900, 'Main Menu', {
+      fontSize: '44px',
+      color: '#ffffff',
+      backgroundColor: '#457b9d',
+      padding: { x: 30, y: 16 },
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+    menuButton.on('pointerdown', () => {
+      this.scene.start('MenuScene');
+    });
   }
 }
