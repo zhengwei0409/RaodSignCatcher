@@ -141,6 +141,11 @@ export default class GameScene extends Phaser.Scene {
     // Swap the top sign image to the new sign.
     this.signImage.setTexture(this.question.sign.key).setDisplaySize(240, 240);
 
+    // Clear every old description still falling, so the new sign's options
+    // don't get mixed up with the previous sign's. clear(true, true) removes
+    // them from the group AND destroys them from the scene.
+    this.descriptions.clear(true, true);
+
     // Empty the queue so the next spawn refills from the NEW options.
     this.spawnQueue = [];
   }
