@@ -35,6 +35,53 @@ export default class GameScene extends Phaser.Scene {
     // Arrow-key controls. createCursorKeys() gives us .left/.right/.up/.down,
     // each of which has an .isDown flag that is true while the key is held.
     this.cursors = this.input.keyboard.createCursorKeys();
+
+    // --- FR-08: falling descriptions ---
+    // A "group" is Phaser's container for many similar objects. We keep all the
+    // falling description texts in here so we can loop over them every frame.
+    this.descriptions = this.add.group();
+
+    // How fast (pixels per frame) the descriptions fall.
+    this.fallSpeed = 4;
+
+    // We spawn options in a shuffled order, one at a time. spawnQueue holds the
+    // options waiting to drop; when it empties we refill+reshuffle it.
+    this.spawnQueue = [];
+
+    // A repeating timer: every 1200ms it calls spawnDescription().
+    // loop: true means it keeps firing forever (not just once).
+    this.time.addEvent({
+      delay: 1200,
+      loop: true,
+      callback: () => this.spawnDescription(),
+    });
+  }
+
+  // Creates ONE falling description text near the top of the screen.
+  spawnDescription() {
+    // Refill the queue if it's empty, so options keep cycling.
+    if (this.spawnQueue.length === 0) {
+      this.spawnQueue = Phaser.Utils.Array.Shuffle([...this.question.options]);
+    }
+    const option = this.spawnQueue.pop();
+
+    // Random x so they don't all fall in the same column. Keep 100px margins.
+    const x = Phaser.Math.Between(100, 620);
+
+    const label = this.add
+      .text(x, -40, option.text, {
+        fontSize: '30px',
+        color: '#ffffff',
+        backgroundColor: '#457b9d',
+        padding: { x: 12, y: 8 },
+      })
+      .setOrigin(0.5);
+
+    // Remember whether this text was the correct answer. We attach our own
+    // field onto the text object so FR-09 can read it when the car catches it.
+    label.isCorrect = option.isCorrect;
+
+    this.descriptions.add(label);
   }
 
   // update() runs automatically on EVERY frame (~60 times a second). This is
@@ -62,5 +109,11 @@ export default class GameScene extends Phaser.Scene {
     // The car image is 120 wide, so its centre must stay 60px from each edge,
     // otherwise half the car would slide off. Clamp forces car.x into range.
     this.car.x = Phaser.Math.Clamp(this.car.x, 60, 720 - 60);
+
+    // --- FR-08: make every description fall ---
+    // getChildren() returns the array of all texts currently in the group.
+    this.descriptions.getChildren().forEach((label) => {
+      label.y += this.fallSpeed;
+    });
   }
 }
