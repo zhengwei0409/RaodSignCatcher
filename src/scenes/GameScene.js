@@ -62,10 +62,16 @@ export default class GameScene extends Phaser.Scene {
     // options waiting to drop; when it empties we refill+reshuffle it.
     this.spawnQueue = [];
 
-    // A repeating timer: every 1200ms it calls spawnDescription().
-    // loop: true means it keeps firing forever (not just once).
-    this.time.addEvent({
-      delay: 1200,
+    // Current gap (ms) between spawns. FR-14 shrinks this as score grows.
+    this.spawnDelay = 1200;
+    this.startSpawnTimer();
+  }
+
+  // Starts (or restarts) the repeating spawn timer using this.spawnDelay.
+  startSpawnTimer() {
+    if (this.spawnTimer) this.spawnTimer.remove();
+    this.spawnTimer = this.time.addEvent({
+      delay: this.spawnDelay,
       loop: true,
       callback: () => this.spawnDescription(),
     });
@@ -144,6 +150,18 @@ export default class GameScene extends Phaser.Scene {
           // FR-10: catching a correct description adds points.
           this.score += 10;
           this.scoreText.setText('Score: ' + this.score);
+
+          // FR-13: descriptions fall faster as the score grows. Base speed 4,
+          // +1 for every 30 points, capped at 12 so it never gets unplayable.
+          this.fallSpeed = Math.min(4 + Math.floor(this.score / 30), 12);
+
+          // FR-14: spawn more often as score grows. Start 1200ms, -50ms per 10
+          // points, floored at 500ms. Restart the timer with the new delay.
+          const newDelay = Math.max(1200 - Math.floor(this.score / 10) * 50, 500);
+          if (newDelay !== this.spawnDelay) {
+            this.spawnDelay = newDelay;
+            this.startSpawnTimer();
+          }
         } else {
           // FR-11: catching a wrong description loses a life.
           this.lives -= 1;
