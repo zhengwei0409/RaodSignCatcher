@@ -83,6 +83,66 @@ export const SIGNS = [
       'Two-way traffic ahead',
     ],
   },
+  {
+    key: 'sign_advance_warning',
+    category: CATEGORY.WARNING,
+    correct: 'Advance warning of a hazard ahead',
+    wrong: [
+      'End of warning zone',
+      'No warning signs beyond this point',
+      'Speed camera ahead',
+    ],
+  },
+  {
+    key: 'sign_motorcycle_lane',
+    category: CATEGORY.PROHIBITORY,
+    correct: 'Compulsory motorcycle lane',
+    wrong: [
+      'No motorcycles allowed',
+      'Motorcycle parking area',
+      'Bicycle lane ahead',
+    ],
+  },
+  {
+    key: 'sign_parking',
+    category: CATEGORY.INFORMATORY,
+    correct: 'Parking area',
+    wrong: [
+      'No parking at any time',
+      'Bus stop ahead',
+      'Loading zone only',
+    ],
+  },
+  {
+    key: 'sign_petrol',
+    category: CATEGORY.INFORMATORY,
+    correct: 'Petrol station ahead',
+    wrong: [
+      'Rest area ahead',
+      'Car wash facility',
+      'No fuel for next 50 km',
+    ],
+  },
+  {
+    key: 'sign_turn_right',
+    category: CATEGORY.PROHIBITORY,
+    correct: 'Turn right only',
+    wrong: [
+      'No right turn',
+      'Right bend ahead',
+      'Keep left of the divider',
+    ],
+  },
+  {
+    key: 'sign_works',
+    category: CATEGORY.WARNING,
+    correct: 'Road works ahead',
+    wrong: [
+      'Road closed ahead',
+      'Uneven road surface',
+      'Workers crossing only',
+    ],
+  },
 ];
 
 // A tiny safety check (FR-04 says each sign needs all 4 fields).

@@ -24,6 +24,12 @@ export default class BootScene extends Phaser.Scene {
     this.load.image('sign_slippery', 'assets/signs/slippery_road.png');
     this.load.image('sign_stop', 'assets/signs/stop_at_intersection.png');
     this.load.image('sign_t_junction', 'assets/signs/t_junction.png');
+    this.load.image('sign_advance_warning', 'assets/signs/advance_warning_sign.png');
+    this.load.image('sign_motorcycle_lane', 'assets/signs/compulsory_motorcyle_lane.png');
+    this.load.image('sign_parking', 'assets/signs/parking_area.png');
+    this.load.image('sign_petrol', 'assets/signs/petrol_station.png');
+    this.load.image('sign_turn_right', 'assets/signs/turn_right_only.png');
+    this.load.image('sign_works', 'assets/signs/works_road.png');
 
     // If any file fails to load, log it clearly instead of failing silently.
     this.load.on('loaderror', (file) => {
