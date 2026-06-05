@@ -24,6 +24,19 @@ android {
     }
 }
 
+// Force every Kotlin stdlib to the same version. Some old dependencies pull in
+// the separate kotlin-stdlib-jdk7/jdk8 1.6.21 libraries, which clash with the
+// newer 1.8.22 stdlib (their classes were merged into the main lib in Kotlin
+// 1.8). Pinning one version + dropping the old split libs fixes the
+// "Duplicate class kotlin..." build errors.
+configurations.all {
+    resolutionStrategy {
+        force "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+        force "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22"
+        force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22"
+    }
+}
+
 repositories {
     flatDir{
         dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
