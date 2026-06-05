@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { generateQuestion } from '../data/questionGenerator.js';
+import { generateQuestion, buildOptions } from '../data/questionGenerator.js';
 
 // GameScene: where the actual game is played.
 export default class GameScene extends Phaser.Scene {
@@ -161,6 +161,14 @@ export default class GameScene extends Phaser.Scene {
           if (newDelay !== this.spawnDelay) {
             this.spawnDelay = newDelay;
             this.startSpawnTimer();
+          }
+
+          // FR-15: once past 50 points, switch the wrong options to the harder,
+          // same-category set. Only rebuild once (when crossing the threshold).
+          if (this.score >= 50 && !this.hardMode) {
+            this.hardMode = true;
+            this.question.options = buildOptions(this.question.sign, 2, true);
+            this.spawnQueue = []; // force the queue to refill from new options
           }
         } else {
           // FR-11: catching a wrong description loses a life.

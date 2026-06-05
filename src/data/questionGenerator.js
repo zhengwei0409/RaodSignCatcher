@@ -7,6 +7,21 @@
 
 import { SIGNS } from './signs.js';
 
+// FR-15: build harder, more misleading wrong options. Instead of a sign's own
+// hand-written wrongs, use the CORRECT descriptions of OTHER signs in the SAME
+// category — those sound the most similar and are hardest to tell apart.
+// Falls back to the sign's own wrong texts if there aren't enough same-category
+// ones. Returns an array of wrong text strings.
+function buildHardWrongTexts(sign, wrongCount) {
+  const sameCategory = SIGNS
+    .filter((s) => s.category === sign.category && s.key !== sign.key)
+    .map((s) => s.correct);
+
+  // Top up with the sign's own wrongs if same-category isn't enough.
+  const pool = shuffle([...sameCategory, ...sign.wrong]);
+  return pool.slice(0, wrongCount);
+}
+
 // --- Helper 1: pick a random item from an array. -------------------------
 // Math.random() gives a decimal from 0 up to (but not including) 1.
 // Multiply by the length and floor() it to get a valid index 0..length-1.
@@ -38,18 +53,19 @@ function shuffle(array) {
 //
 // wrongCount lets us control difficulty later (FR-14/FR-15 can ask for more
 // wrong options). It defaults to 2 so callers don't have to pass anything yet.
-export function generateQuestion(wrongCount = 2) {
+export function generateQuestion(wrongCount = 2, hard = false) {
   // 1. Pick which sign this question is about.
   const sign = pickRandom(SIGNS);
 
   // 2. Tag the one correct description.
   const correctOption = { text: sign.correct, isCorrect: true };
 
-  // 3. Take some wrong descriptions (shuffled so we don't always grab the same
-  //    ones), then tag each as incorrect. slice() takes the first wrongCount.
-  const wrongOptions = shuffle(sign.wrong)
-    .slice(0, wrongCount)
-    .map((text) => ({ text, isCorrect: false }));
+  // 3. Pick wrong descriptions. In hard mode (FR-15) they come from
+  //    same-category signs (more misleading); otherwise the sign's own wrongs.
+  const wrongTexts = hard
+    ? buildHardWrongTexts(sign, wrongCount)
+    : shuffle(sign.wrong).slice(0, wrongCount);
+  const wrongOptions = wrongTexts.map((text) => ({ text, isCorrect: false }));
 
   // 4. Combine correct + wrong, then shuffle the whole set so the correct one
   //    isn't always in the same position.
@@ -57,4 +73,15 @@ export function generateQuestion(wrongCount = 2) {
 
   // 5. Return the finished question.
   return { sign, options };
+}
+
+// FR-15: rebuild the shuffled options for an EXISTING sign at hard difficulty,
+// without changing the sign itself (so the displayed image stays the same).
+export function buildOptions(sign, wrongCount = 2, hard = false) {
+  const correctOption = { text: sign.correct, isCorrect: true };
+  const wrongTexts = hard
+    ? buildHardWrongTexts(sign, wrongCount)
+    : shuffle(sign.wrong).slice(0, wrongCount);
+  const wrongOptions = wrongTexts.map((text) => ({ text, isCorrect: false }));
+  return shuffle([correctOption, ...wrongOptions]);
 }

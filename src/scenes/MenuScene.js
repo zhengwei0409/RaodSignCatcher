@@ -7,17 +7,30 @@ export default class MenuScene extends Phaser.Scene {
   }
 
   create() {
-    this.add.text(360, 640, 'MenuScene', {
-      fontSize: '48px',
+    // Background fills the whole 720x1280 canvas.
+    this.add.image(360, 640, 'menuBackground').setDisplaySize(720, 1280);
+
+    // FR-16: title.
+    this.add.text(360, 400, 'Sign Catcher', {
+      fontSize: '72px',
       color: '#ffffff',
+      fontStyle: 'bold',
     }).setOrigin(0.5);
-    this.add.text(360, 720, '(tap to continue)', {
-      fontSize: '28px',
+
+    this.add.text(360, 490, 'Malaysian Road Sign Challenge', {
+      fontSize: '32px',
       color: '#a8dadc',
     }).setOrigin(0.5);
 
-    // Temporary: tap anywhere to go to the next scene (for testing FR-02).
-    this.input.once('pointerdown', () => {
+    // FR-16: Play button -> start the game.
+    const playButton = this.add.text(360, 720, 'Play', {
+      fontSize: '52px',
+      color: '#ffffff',
+      backgroundColor: '#457b9d',
+      padding: { x: 50, y: 20 },
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+    playButton.on('pointerdown', () => {
       this.scene.start('GameScene');
     });
   }
