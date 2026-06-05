@@ -83,6 +83,56 @@ export default class GameScene extends Phaser.Scene {
     this.startSpawnTimer();
 
     this.setupPause();
+    this.setupWrongAnswerOverlay();
+  }
+
+  // Builds the overlay shown when the player catches a WRONG answer: it pauses
+  // the game and displays the correct meaning until they tap Continue. This
+  // gives players time to actually read and learn from the mistake.
+  setupWrongAnswerOverlay() {
+    this.wrongOverlay = this.add.container(0, 0).setDepth(2500).setVisible(false);
+
+    const dim = this.add.rectangle(360, 640, 720, 1280, 0x000000, 0.75);
+
+    const heading = this.add.text(360, 460, 'Wrong!', {
+      fontSize: '64px', color: '#e63946', fontStyle: 'bold',
+    }).setOrigin(0.5);
+
+    // The correct meaning. Filled in each time showWrongAnswer() runs.
+    this.wrongAnswerText = this.add.text(360, 600, '', {
+      fontSize: '40px', color: '#ffffff', align: 'center', fontStyle: 'bold',
+      wordWrap: { width: 600 },
+    }).setOrigin(0.5);
+
+    const continueButton = this.add.text(360, 780, 'Continue', {
+      fontSize: '44px', color: '#ffffff',
+      backgroundColor: '#457b9d', padding: { x: 40, y: 16 },
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    continueButton.on('pointerdown', () => this.dismissWrongAnswer());
+
+    this.wrongOverlay.add([dim, heading, this.wrongAnswerText, continueButton]);
+  }
+
+  // Pauses the game and shows the current sign's correct meaning.
+  showWrongAnswer() {
+    this.wrongAnswerText.setText('Correct answer:\n' + this.question.sign.correct);
+    this.wrongOverlay.setVisible(true);
+    this.isPaused = true;              // freezes update() and...
+    this.spawnTimer.paused = true;    // ...stops new descriptions spawning
+  }
+
+  // Continue from the wrong-answer overlay. If the player has no lives left,
+  // the game is over; otherwise hide the overlay and resume play.
+  dismissWrongAnswer() {
+    this.wrongOverlay.setVisible(false);
+
+    if (this.lives <= 0) {
+      this.scene.start('GameOverScene', { score: this.score });
+      return;
+    }
+
+    this.isPaused = false;
+    this.spawnTimer.paused = false;
   }
 
   // --- FR-18: pause / resume ---
@@ -302,11 +352,13 @@ export default class GameScene extends Phaser.Scene {
           // Show one heart per remaining life (empty string when none left).
           this.livesText.setText('❤️'.repeat(this.lives));
 
-          // FR-12: out of lives -> go to game over, passing the final score.
-          if (this.lives <= 0) {
-            this.scene.start('GameOverScene', { score: this.score });
-            return;
-          }
+          // Pause and show the correct meaning as a learning moment. The label
+          // is removed first so it isn't left on screen behind the overlay.
+          // FR-12: if this was the last life, Continue goes to game over
+          // instead of resuming (handled in dismissWrongAnswer()).
+          label.destroy();
+          this.showWrongAnswer();
+          return;
         }
         label.destroy();
         return; // this label is gone; skip the off-screen check below
