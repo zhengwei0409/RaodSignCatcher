@@ -10,6 +10,10 @@ export default class MenuScene extends Phaser.Scene {
     // Background fills the whole 720x1280 canvas.
     this.add.image(360, 640, 'menuBackground').setDisplaySize(720, 1280);
 
+    // Dark overlay on top of the background to boost contrast for the text.
+    // Added right after the background so it sits above it but below the text.
+    this.add.rectangle(360, 640, 720, 1280, 0x000000, 0.45);
+
     // FR-16: title.
     this.add.text(360, 400, 'Sign Catcher', {
       fontSize: '72px',

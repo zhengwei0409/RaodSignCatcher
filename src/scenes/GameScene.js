@@ -12,6 +12,10 @@ export default class GameScene extends Phaser.Scene {
     // Draw the game background to fill the whole 720x1280 canvas.
     this.add.image(360, 640, 'gameBackground').setDisplaySize(720, 1280);
 
+    // Dark overlay on top of the background to boost contrast for the sign,
+    // car, and falling text. Added early so it stays below all game elements.
+    this.add.rectangle(360, 640, 720, 1280, 0x000000, 0.35);
+
     // A shuffled queue of signs we haven't shown yet. We pull from it so no sign
     // repeats until every sign has appeared once; then it refills + reshuffles.
     this.signQueue = [];
