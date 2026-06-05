@@ -130,6 +130,21 @@ export default class GameScene extends Phaser.Scene {
     });
   }
 
+  // Picks a fresh question and updates the screen to show it.
+  loadNextQuestion() {
+    // New sign + new options (respect hard mode if already unlocked).
+    this.question = generateQuestion();
+    if (this.hardMode) {
+      this.question.options = buildOptions(this.question.sign, 2, true);
+    }
+
+    // Swap the top sign image to the new sign.
+    this.signImage.setTexture(this.question.sign.key).setDisplaySize(240, 240);
+
+    // Empty the queue so the next spawn refills from the NEW options.
+    this.spawnQueue = [];
+  }
+
   // Creates ONE falling description text near the top of the screen.
   spawnDescription() {
     // Refill the queue if it's empty, so options keep cycling.
@@ -226,6 +241,10 @@ export default class GameScene extends Phaser.Scene {
             this.question.options = buildOptions(this.question.sign, 2, true);
             this.spawnQueue = []; // force the queue to refill from new options
           }
+
+          // Correct answer -> move on to a new sign + new options.
+          this.loadNextQuestion();
+          return; // the old labels are gone; stop looping the old list
         } else {
           // FR-11: catching a wrong description loses a life.
           this.lives -= 1;
