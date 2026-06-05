@@ -37,5 +37,17 @@ export default class MenuScene extends Phaser.Scene {
     playButton.on('pointerdown', () => {
       this.scene.start('GameScene');
     });
+
+    // How to Play button -> show the instructions scene.
+    const howToButton = this.add.text(360, 850, 'How to Play', {
+      fontSize: '40px',
+      color: '#ffffff',
+      backgroundColor: '#457b9d',
+      padding: { x: 30, y: 16 },
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+    howToButton.on('pointerdown', () => {
+      this.scene.start('HowToPlayScene');
+    });
   }
 }

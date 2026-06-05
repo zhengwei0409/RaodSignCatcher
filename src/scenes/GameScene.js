@@ -59,9 +59,9 @@ export default class GameScene extends Phaser.Scene {
     // (one full pass through SIGNS) wins the game.
     this.signsCleared = 0;
 
-    // --- FR-11: lives (start with 3) ---
+    // --- FR-11: lives (start with 3), shown as heart emojis ---
     this.lives = 3;
-    this.livesText = this.add.text(700, 20, 'Lives: 3', {
+    this.livesText = this.add.text(700, 20, '❤️❤️❤️', {
       fontSize: '36px',
       color: '#ffffff',
     }).setOrigin(1, 0).setDepth(1000); // anchor top-right, above descriptions
@@ -299,7 +299,8 @@ export default class GameScene extends Phaser.Scene {
 
           // FR-11: catching a wrong description loses a life.
           this.lives -= 1;
-          this.livesText.setText('Lives: ' + this.lives);
+          // Show one heart per remaining life (empty string when none left).
+          this.livesText.setText('❤️'.repeat(this.lives));
 
           // FR-12: out of lives -> go to game over, passing the final score.
           if (this.lives <= 0) {
