@@ -65,6 +65,58 @@ export default class GameScene extends Phaser.Scene {
     // Current gap (ms) between spawns. FR-14 shrinks this as score grows.
     this.spawnDelay = 1200;
     this.startSpawnTimer();
+
+    this.setupPause();
+  }
+
+  // --- FR-18: pause / resume ---
+  setupPause() {
+    // A "Pause" button in the HUD.
+    const pauseButton = this.add.text(360, 30, '|| Pause', {
+      fontSize: '32px',
+      color: '#ffffff',
+      backgroundColor: '#457b9d',
+      padding: { x: 16, y: 8 },
+    }).setOrigin(0.5, 0).setDepth(1000).setInteractive({ useHandCursor: true });
+    pauseButton.on('pointerdown', () => this.pauseGame());
+
+    // Also allow the P key to toggle pause/resume.
+    this.input.keyboard.on('keydown-P', () => {
+      if (this.isPaused) this.resumeGame();
+      else this.pauseGame();
+    });
+
+    // A full-screen overlay shown while paused. Hidden by default.
+    this.pauseOverlay = this.add.container(0, 0).setDepth(2000).setVisible(false);
+    const dim = this.add.rectangle(360, 640, 720, 1280, 0x000000, 0.6);
+    const pausedText = this.add.text(360, 580, 'PAUSED', {
+      fontSize: '72px', color: '#ffffff', fontStyle: 'bold',
+    }).setOrigin(0.5);
+    const resumeText = this.add.text(360, 700, 'Tap to resume', {
+      fontSize: '36px', color: '#a8dadc',
+    }).setOrigin(0.5);
+    this.pauseOverlay.add([dim, pausedText, resumeText]);
+
+    // Tapping the dim overlay resumes.
+    dim.setInteractive().on('pointerdown', () => this.resumeGame());
+
+    // Paused flag checked by update() and the spawn timer. We use a flag rather
+    // than scene.pause() so the overlay/keys still receive input while paused.
+    this.isPaused = false;
+  }
+
+  pauseGame() {
+    if (this.isPaused) return;
+    this.isPaused = true;
+    this.pauseOverlay.setVisible(true);
+    this.spawnTimer.paused = true; // stop spawning new descriptions
+  }
+
+  resumeGame() {
+    if (!this.isPaused) return;
+    this.isPaused = false;
+    this.pauseOverlay.setVisible(false);
+    this.spawnTimer.paused = false;
   }
 
   // Starts (or restarts) the repeating spawn timer using this.spawnDelay.
@@ -113,6 +165,9 @@ export default class GameScene extends Phaser.Scene {
   // update() runs automatically on EVERY frame (~60 times a second). This is
   // where continuous movement lives, because create() only runs once.
   update() {
+    // FR-18: while paused, freeze all game logic (no movement/falling/catching).
+    if (this.isPaused) return;
+
     // --- Arrow keys ---
     if (this.cursors.left.isDown) {
       this.car.x -= this.carSpeed;
