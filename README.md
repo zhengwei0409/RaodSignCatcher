@@ -83,3 +83,33 @@ The game covers a wide range of Malaysian road signs, including:
 | Platform  | Mobile (Android)                |
 | Form      | Android game                    |
 
+## Getting Started
+
+Run in the browser during development:
+
+```bash
+npm install
+npm run dev
+```
+
+## Building the Android APK
+
+Packaged with [Capacitor](https://capacitorjs.com/). Requires Android Studio.
+
+```bash
+npm run build      # bundle the web game into dist/
+npx cap sync       # copy it into the android/ project
+npx cap open android   # open in Android Studio
+```
+
+Then in Android Studio: **Build → Build App Bundle(s) / APK(s) → Build APK(s)**.
+
+The APK is created at:
+
+```
+android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+Share this file (e.g. via Google Drive) to any Android phone. The phone must
+allow installing apps from "unknown sources". 
+
