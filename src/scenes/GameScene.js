@@ -103,7 +103,17 @@ export default class GameScene extends Phaser.Scene {
     const resumeText = this.add.text(360, 700, 'Tap to resume', {
       fontSize: '36px', color: '#a8dadc',
     }).setOrigin(0.5);
-    this.pauseOverlay.add([dim, pausedText, resumeText]);
+
+    // An "End Game" button that quits back to the main menu.
+    const endButton = this.add.text(360, 820, 'End Game', {
+      fontSize: '40px', color: '#ffffff',
+      backgroundColor: '#e63946', padding: { x: 30, y: 16 },
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    endButton.on('pointerdown', () => this.scene.start('MenuScene'));
+
+    // Order matters: dim is added first (bottom), endButton last (top) so the
+    // dim's "tap to resume" doesn't swallow clicks on the button above it.
+    this.pauseOverlay.add([dim, pausedText, resumeText, endButton]);
 
     // Tapping the dim overlay resumes.
     dim.setInteractive().on('pointerdown', () => this.resumeGame());
