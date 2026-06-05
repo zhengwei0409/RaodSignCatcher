@@ -83,18 +83,3 @@ The game covers a wide range of Malaysian road signs, including:
 | Platform  | Mobile (Android)                |
 | Form      | Android game                    |
 
-## Getting Started
-
-> ⚠️ Development has not started yet. These steps are placeholders and will be
-> filled in once the project is set up.
-
-```bash
-# 1. Install dependencies
-# TODO
-
-# 2. Run the development build
-# TODO
-
-# 3. Build the Android package
-# TODO
-```
