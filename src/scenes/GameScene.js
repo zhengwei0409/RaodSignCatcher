@@ -41,14 +41,14 @@ export default class GameScene extends Phaser.Scene {
     this.scoreText = this.add.text(20, 20, 'Score: 0', {
       fontSize: '36px',
       color: '#ffffff',
-    });
+    }).setDepth(1000); // FR-17: keep HUD above falling descriptions
 
     // --- FR-11: lives (start with 3) ---
     this.lives = 3;
     this.livesText = this.add.text(700, 20, 'Lives: 3', {
       fontSize: '36px',
       color: '#ffffff',
-    }).setOrigin(1, 0); // anchor top-right
+    }).setOrigin(1, 0).setDepth(1000); // anchor top-right, above descriptions
 
     // --- FR-08: falling descriptions ---
     // A "group" is Phaser's container for many similar objects. We keep all the
