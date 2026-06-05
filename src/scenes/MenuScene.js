@@ -61,5 +61,13 @@ export default class MenuScene extends Phaser.Scene {
     answersButton.on('pointerdown', () => {
       this.scene.start('AnswersScene');
     });
+
+    // Creator credit at the bottom of the screen.
+    this.add.text(360, 1180, 'Created By:\nChew Zheng Wei\n23005014', {
+      fontSize: '26px',
+      color: '#a8dadc',
+      align: 'center',
+      lineSpacing: 4,
+    }).setOrigin(0.5);
   }
 }
