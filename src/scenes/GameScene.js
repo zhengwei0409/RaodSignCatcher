@@ -148,6 +148,12 @@ export default class GameScene extends Phaser.Scene {
           // FR-11: catching a wrong description loses a life.
           this.lives -= 1;
           this.livesText.setText('Lives: ' + this.lives);
+
+          // FR-12: out of lives -> go to game over, passing the final score.
+          if (this.lives <= 0) {
+            this.scene.start('GameOverScene', { score: this.score });
+            return;
+          }
         }
         label.destroy();
         return; // this label is gone; skip the off-screen check below
